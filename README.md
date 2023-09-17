@@ -9,7 +9,7 @@ We present a comprehensive framework based on Monte Carlo Tree Search for decisi
 ## Setup & Usage
 
 1. Clone the repository
-2. Choose or set the environment. Make sure the version of MATLAB is above 2023a.
+2. Choose or set the environment. Make sure the version of MATLAB is above 2023a and the version of Automated Driving Toolbox is above 3.7.
 3. Run mctsPlanning.m
 
 ## Qualitative Results
