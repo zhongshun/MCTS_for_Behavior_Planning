@@ -12,6 +12,7 @@ egoVehicle.Velocity(1:2) = [cos(currentEgoState(3)) sin(currentEgoState(3))]*cur
 
 % Set Yaw in degrees
 egoVehicle.Yaw = currentEgoState(3)*180/pi;
+% egoVehicle.Yaw = currentEgoState(3);
 
 % Set angular velocity in Z (yaw rate) as v/r
 egoVehicle.AngularVelocity(3) = currentEgoState(4)*currentEgoState(5);

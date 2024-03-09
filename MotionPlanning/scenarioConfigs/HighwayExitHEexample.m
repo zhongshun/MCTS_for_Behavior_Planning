@@ -5,7 +5,7 @@ function [scenario, egoVehicle, egoWaypoints, actorWaypoints, allStatus, roadCon
 % Generated on: 25-Aug-2023 14:04:30
 
 % Construct a drivingScenario object.
-scenario = drivingScenario("SampleTime",1.0, "StopTime",15.0);
+scenario = drivingScenario("SampleTime",1.0, "StopTime",20.0);
 actorWaypoints = cell(0);
 allStatus = cell(0);
 roadConfigs = cell(0);
@@ -13,8 +13,8 @@ egoWaypoints = [-66.5 -15.1 deg2rad(21);
     -7 2.3 deg2rad(11.9419);
     11.8 4.1 deg2rad(-6.2613);
     30.8 -2.3 deg2rad(-25.2810);
-    75.9 -26.5 deg2rad(-31.5683);
     99.8 -42 deg2rad(-33.6631)];
+% 75.9 -26.5 deg2rad(-31.5683);
 
 % Add all road segments
 roadCenters = [-85 -15.1 0;
@@ -46,7 +46,15 @@ egoVehicle = vehicle(scenario, ...
     'ClassID', 1, ...
     'Position', [-66.5 -15.1 0], ...
     'Mesh', driving.scenario.carMesh, ...
-    'Name', 'Car');
+    'Name', 'Car', ...
+    'Yaw', 21);
+% waypoints = [-66.5 -15.1 ;
+%     -7 2.3 ;
+%     11.8 4.1 ;
+%     30.8 -2.3 ;
+%     99.8 -42 ;];
+% speed = [10;10;10;10;10];
+% trajectory(egoVehicle, waypoints, speed);
 
 % Add the non-ego actors
 car1 = vehicle(scenario, ...
