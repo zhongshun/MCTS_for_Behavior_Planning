@@ -1,6 +1,7 @@
 clear;
 % Initially state
 addpath('scenarioConfigs');
+
 % VERY IMPORTANT IMFORMATION !!!
 % To simulate each scenario that we provided below, just wrap the comments
 % of each line. 
@@ -10,10 +11,11 @@ addpath('scenarioConfigs');
 % graphs come out, they will show the direct details about this simulation.
 % Hint: As the special traits of the MCTS, you may get different result for
 % a single scenario, just try to run more times to explore them!
-
+quantResult = cell(1, 100);
+for r = 1: 100
 
 % This is for Intersection, Go Straight example2.
-[scenario, egoVehicle, egoWaypoints, actorWaypoints, allStatus, roadConfigs] = IntersectionGoStraightexample2();
+% [scenario, egoVehicle, egoWaypoints, actorWaypoints, allStatus, roadConfigs] = IntersectionGoStraightexample2();
 
 % This is for Intersection, Unprotected Straight Cross example
 % [scenario, egoVehicle, egoWaypoints, actorWaypoints, allStatus, roadConfigs] = IntersectionUnprotectedStraightCrossexample();
@@ -37,17 +39,35 @@ addpath('scenarioConfigs');
 % [scenario, egoVehicle, egoWaypoints, actorWaypoints, allStatus, roadConfigs] = IntersectionUnprotectedLeftTurnexample();
 
 % This is for Highway Exit (HE) example
-% [scenario, egoVehicle, egoWaypoints, actorWaypoints, allStatus, roadConfigs] = HighwayExitHEexample();
+[scenario, egoVehicle, egoWaypoints, actorWaypoints, allStatus, roadConfigs] = HighwayExitHEexample();
 
 % This is for Large Curvature example
 % [scenario, egoVehicle, egoWaypoints, actorWaypoints, allStatus, roadConfigs] = LargeCurvatureexample();
 
+% This is for Shanghai Roundabout example
+% [scenario, egoVehicle, egoWaypoints, actorWaypoints, allStatus, roadConfigs] = ShanghaiRoundabout();
+
+% This is for Shanghai Pudong South Intersection Unprotected left turn
+% example
+% [scenario, egoVehicle, egoWaypoints, actorWaypoints, allStatus, roadConfigs] = ShanghaiPudongSouthIntersection();
+
+% This is for Shanghai Lujiazui Tunnel example
+% [scenario, egoVehicle, egoWaypoints, actorWaypoints, allStatus, roadConfigs] =  ShanghaiLujiazuiTunnel();
+
+% This is for Shanghai Centural Avenue Turn Right example
+% [scenario, egoVehicle, egoWaypoints, actorWaypoints, allStatus, roadConfigs] = ShanghaiCenturalAvenue();
+
+% This is for Shanghai Centural Avenue Go Straight example
+% [scenario, egoVehicle, egoWaypoints, actorWaypoints, allStatus, roadConfigs] = ShanghaiCenturalAvenueGoStraight();
+
 % Above are all the scenarios of the program.
 
 
+temp_test = struct("success", 0, "collision", 0, "Round", r, 'Time', 0);
+MCTS_time = [];
 % This is for giving the egoCar's initial position.
 % setStartEgoState(egoWaypoints, velocity, acceleration)
-startEgoState = setStartEgoState(egoWaypoints, 5, 0);
+startEgoState = setStartEgoState(egoWaypoints, 5, 0, egoVehicle.Yaw);
 
 % Create a reference path using waypoints
 egorefPath = referencePathFrenet(egoWaypoints);
@@ -58,6 +78,7 @@ roadS = pathPoints(:,end);
 
 % Set destination position.
 DestinationS = egorefPath.PathLength;
+SuccessPointS = egorefPath.SegmentParameters(end, end);
 % DestinationS = egorefPath.SegmentParameters(end, end);
 
 % Moving egoVehicle into the initial state of the scenario.
@@ -67,7 +88,7 @@ egoFrenetState = global2frenet(egorefPath, startEgoState);
 
 % Initialize basic configs
 TIME = 0;
-max_iter = 3000;
+max_iter = 50;
 accMax = 5;
 limitJerk = 15;
 speedlimit = 20;
@@ -116,6 +137,7 @@ for i = 1:numel(predictedActTrajectories)
 
 end
 
+
 while scenario.SimulationTime < scenario.StopTime && root.egoFrenetState(1) < DestinationS
     
     % This is to detect all actor Vehicles.
@@ -131,6 +153,7 @@ while scenario.SimulationTime < scenario.StopTime && root.egoFrenetState(1) < De
     Tree{1} = root;
 
     %PLANNING SIMULATION
+    tic;
     while (Tree{1}.visits < max_iter)
         curr_node = selection(Tree{1}, Tree);
 
@@ -199,12 +222,14 @@ while scenario.SimulationTime < scenario.StopTime && root.egoFrenetState(1) < De
             if checkCollision(root, expectedNode, predictedActPositions, egoVehicle, profiles, TimeResolution, scenario, egorefPath)
                 disp("Collision is inevitable.");
                 flagCollision = true;
+                temp_test.collision = 1;
+                plot(scenario);
                 break;
             end
         end
 
     end
-    % TotalTime(numel(TotalTime) + 1) = toc;
+    MCTS_time(numel(MCTS_time) + 1) = toc;
     AllPath{numel(AllPath) + 1} = expectedNode;
     AllTree{numel(AllTree) + 1} = Tree;
     wp = [root.state(1:2) 0; expectedNode.state(1:2) 0];
@@ -233,9 +258,20 @@ while scenario.SimulationTime < scenario.StopTime && root.egoFrenetState(1) < De
     root.egoFrenetState = expectedNode.egoFrenetState;% [s ds dss l dl dll]
     root.laneChangingProperties = expectedNode.laneChangingProperties;
     advance(scenario)
+    if root.egoFrenetState(1, 1) >= SuccessPointS
+        temp_test.success = 1;
+        disp("Round " + r + ": Success");
+        break;
+    end
 end
 
-displayScenario(AllPath, actorWaypoints, profiles, allStatus, roadConfigs);
+% displayScenario(AllPath, actorWaypoints, profiles, allStatus, roadConfigs);
+temp_test.Time = MCTS_time;
+quantResult{r} = temp_test;
+
+end
+
+plotQuantitative(quantResult, max_iter);
 
 
 
@@ -243,7 +279,9 @@ function Tree_ = expand(Tree, node, TimeResolution, accMax, speedlimit, refPath,
 % This is the situation for the car to do a sudden break.
 Tree_ = Tree;
 newNode5 = struct('state', node.state, 'time', node.time + TimeResolution, ...
-    'children', 0, 'visits', 0, 'score', 0, 'index', numel(Tree) + 1, 'parent', node.index, 'parentaCC', node.state(1, end), 'UCB', inf, 'egoFrenetState', node.egoFrenetState, 'avgScore', 0, 'laneChangingProperties', node.laneChangingProperties);
+    'children', 0, 'visits', 0, 'score', 0, 'index', numel(Tree) + 1, ...
+    'parent', node.index, 'parentaCC', node.state(1, end), 'parentV', node.state(1, end -1), 'parentX', node.state(1, 1), 'parentY', node.state(1, 2), ...
+    'UCB', inf, 'egoFrenetState', node.egoFrenetState, 'avgScore', 0, 'laneChangingProperties', node.laneChangingProperties);
 
 emergencyAcc = -(2 * node.egoFrenetState(2) / TimeResolution) - node.egoFrenetState(3);
 % Let's set the maximum deceleration to be 8m/s^2
@@ -270,7 +308,9 @@ Jerk3 = -node.egoFrenetState(3) / TimeResolution;
 
 % The situation for egoVehicle to keep its constant speed
 newNode3 = struct('state', node.state, 'time', node.time + TimeResolution, ...
-    'children', 0, 'visits', 0, 'score', 0, 'index', numel(Tree) + 1, 'parent', node.index, 'parentaCC', node.state(1, end), 'UCB', inf, 'egoFrenetState', node.egoFrenetState, 'avgScore', 0, 'laneChangingProperties', node.laneChangingProperties);
+    'children', 0, 'visits', 0, 'score', 0, 'index', numel(Tree) + 1, ...
+    'parent', node.index, 'parentaCC', node.state(1, end), 'parentV', node.state(1, end -1), 'parentX', node.state(1, 1), 'parentY', node.state(1, 2), ...
+    'UCB', inf, 'egoFrenetState', node.egoFrenetState, 'avgScore', 0, 'laneChangingProperties', node.laneChangingProperties);
 
 newNode3.laneChangingProperties.Change = false;
 
@@ -297,7 +337,9 @@ for i = 1:numel(lbdry)
             % change to the left-side lane
 
             newNode4 = struct('state', newNode3.state, 'time', node.time + TimeResolution, ...
-                'children', 0, 'visits', 0, 'score', 0, 'index', numel(Tree) + 1, 'parent', node.index, 'parentaCC', node.state(1, end),'UCB', inf, 'egoFrenetState', newNode3.egoFrenetState, 'avgScore', 0, 'laneChangingProperties', node.laneChangingProperties);
+                'children', 0, 'visits', 0, 'score', 0, 'index', numel(Tree) + 1, ...
+                'parent', node.index, 'parentaCC', node.state(1, end), 'parentV', node.state(1, end -1), 'parentX', node.state(1, 1), 'parentY', node.state(1, 2), ...
+                'UCB', inf, 'egoFrenetState', newNode3.egoFrenetState, 'avgScore', 0, 'laneChangingProperties', node.laneChangingProperties);
             deltaL = lbdry(i).LateralOffset + 0.5 * roadWidth;
             % deltaL represents to the distance that the car moves
             % laterally
@@ -314,7 +356,9 @@ for i = 1:numel(lbdry)
         elseif lbdry(i).LateralOffset < 0
             % change to the right-side lane
             newNode4 = struct('state', newNode3.state, 'time', node.time + TimeResolution, ...
-                'children', 0, 'visits', 0, 'score', 0, 'index', numel(Tree) + 1, 'parent', node.index, 'parentaCC', node.state(1, end), 'UCB', inf, 'egoFrenetState', newNode3.egoFrenetState, 'avgScore', 0, 'laneChangingProperties', node.laneChangingProperties);
+                'children', 0, 'visits', 0, 'score', 0, 'index', numel(Tree) + 1, ...
+                'parent', node.index, 'parentaCC', node.state(1, end), 'parentV', node.state(1, end -1), 'parentX', node.state(1, 1), 'parentY', node.state(1, 2),...
+                'UCB', inf, 'egoFrenetState', newNode3.egoFrenetState, 'avgScore', 0, 'laneChangingProperties', node.laneChangingProperties);
             deltaL = lbdry(i).LateralOffset - 0.5 * roadWidth;
             newNode4.laneChangingProperties.RightChange = newNode4.laneChangingProperties.RightChange + 1;
             newNode4.laneChangingProperties.Change = true;
@@ -339,7 +383,9 @@ for nextAcc = 1:accMax
     if node.egoFrenetState(2) > 1
         jerk1 = (-nextAcc - node.egoFrenetState(3)) / TimeResolution;
         newNode1 = struct('state', node.state, 'time', node.time + TimeResolution, ...
-            'children', 0, 'visits', 0, 'score', 0, 'index', numel(Tree) + 1, 'parent', node.index, 'parentaCC', node.state(1, end), 'UCB', inf, 'egoFrenetState', node.egoFrenetState,'avgScore', 0, 'laneChangingProperties', node.laneChangingProperties);
+            'children', 0, 'visits', 0, 'score', 0, 'index', numel(Tree) + 1, ...
+            'parent', node.index, 'parentaCC', node.state(1, end), 'parentV', node.state(1, end -1), 'parentX', node.state(1, 1), 'parentY', node.state(1, 2),...
+            'UCB', inf, 'egoFrenetState', node.egoFrenetState,'avgScore', 0, 'laneChangingProperties', node.laneChangingProperties);
 
         [displacementS1, deltaSpeedS1, displacementL1, deltaSpeedL1] = getDisplacement(node, jerk1, 0, TimeResolution);
         newNode1.laneChangingProperties.Change = false;
@@ -355,7 +401,9 @@ for nextAcc = 1:accMax
     % acceleration section
     jerk2 = (nextAcc - node.egoFrenetState(3)) / TimeResolution;
     newNode2 = struct('state', node.state, 'time', node.time + TimeResolution, ...
-        'children', 0, 'visits', 0, 'score', 0, 'index', numel(Tree) + 1, 'parent', node.index, 'parentaCC', node.state(1, end), 'UCB', inf, 'egoFrenetState', node.egoFrenetState,'avgScore', 0, 'laneChangingProperties', node.laneChangingProperties);
+        'children', 0, 'visits', 0, 'score', 0, 'index', numel(Tree) + 1, ...
+        'parent', node.index, 'parentaCC', node.state(1, end), 'parentV', node.state(1, end -1), 'parentX', node.state(1, 1), 'parentY', node.state(1, 2),...
+        'UCB', inf, 'egoFrenetState', node.egoFrenetState,'avgScore', 0, 'laneChangingProperties', node.laneChangingProperties);
 
     [displacementS2, deltaSpeedS2, displacementL2, deltaSpeedL2] = getDisplacement(node, jerk2, 0, TimeResolution);
 
@@ -406,7 +454,7 @@ while currNode.time < MaxTimeHorizon
     randomNum = rand();
     randomAcc = randi([1, accMax]);
 
-    if randomNum <= 0.2
+    if randomNum <= 0.1
         % This situation is for slowing down, so randomAcc is a negative
         % number.
 
@@ -431,7 +479,7 @@ while currNode.time < MaxTimeHorizon
             break;
         end
         currNode = newNode;
-    elseif randomNum >= 0.8
+    elseif randomNum >= 0.9
         % This situation is for speeding up
 
         % If Acc is out of limit, then let restrain the acc to be a proper
@@ -551,8 +599,14 @@ if currNode.time >= MaxTimeHorizon
     end
 end
 
-cost2 = costFunction(node, newNode, checkPoint, predicted, MaxTimeHorizon, TimeResolution, egoVehicle, speedlimit, profiles, scenario);
-cost = cost + cost2(1);
+aggregate_cost = costFunction(node, newNode, checkPoint, predicted, MaxTimeHorizon, TimeResolution, egoVehicle, speedlimit, profiles, scenario);
+% disp("final_efficiency_cost:" + cost(2));
+% disp("final_reasonable_cost:" + cost(3));
+% disp("final_similarity_cost:" + cost(4));
+% disp("finial_lane_change_cost:" + cost(5));
+% disp("final_safety_cost:" + cost(6));
+% disp("cost: " + cost(1));
+cost = cost + aggregate_cost(1);
 end
 
 function tree_ = back_propagation(node, score, tree)
@@ -624,97 +678,140 @@ for i = 1:numel(predictedActPositions)
 end
 end
 
-
 function cost = costFunction(node, nextNode, checkPoint, predictedActPositions, MaxTimeHorizon, TimeResolution, egoVehicle, speedlimit, profiles, scenario)
-AccLevel = 0.8 * nextNode.egoFrenetState(3) + 0.2 * node.egoFrenetState(3);
-comfort = (nextNode.egoFrenetState(3) + node.egoFrenetState(3)) / 2;
 
-% jerk calculation
-jerk = (nextNode.egoFrenetState(3) - node.egoFrenetState(3)) / (nextNode.time - node.time);
+if abs(node.egoFrenetState(4)) >= 0.5
+    is_lane_change = 1;
+else 
+    is_lane_change = 0;
+end
+% smoothness
+% jerk_smoothness_cost = calculate_lon_jerk_smoothness(node, nextNode, TimeResolution);
+% theta_smoothness_cost = calculate_lat_theta_smoothness(node, nextNode, TimeResolution);
+% kappa_smoothness_cost = calculate_lat_kappa_smoothness(node, nextNode, TimeResolution);
 
-cost_comfort = calculateComfortCost(jerk, comfort, node);
-cost_pass = calculatePassibilityCost(nextNode, checkPoint, MaxTimeHorizon);
-cost_safety = calculateSafetyCost(nextNode, predictedActPositions, egoVehicle, profiles, scenario);
-cost_lane_changing = calculateLaneChangingCost(node);
-cost_is_break_to_stop = calculateBreakToStop(nextNode, MaxTimeHorizon);
+% efficiency
+speed_efficiency_cost = calculate_speed_efficiency(node, nextNode, speedlimit);
+travel_efficiency_cost = calculate_travel_efficiency(node, nextNode, checkPoint);
+% reliability
+deviation_cost = calculate_deviation_cost;
 
-% stimulate the car to moveforward.
-if nextNode.egoFrenetState(2) < speedlimit
-    % the standard level for cost_stimulation is 0.0, e.g.
-    % speed ==  speedlimit, acc == 0
-    cost_stimulation = 10 * (speedlimit - nextNode.egoFrenetState(2)) ^ 2 + 5 * (3 - AccLevel);
+% lane-changing
+lane_cost = calculate_lane_cost(node, nextNode, is_lane_change);
+lane_change_cost = is_lane_change;
 
-elseif nextNode.egoFrenetState(2) > speedlimit
-    expectAcc = (nextNode.egoFrenetState(2) - speedlimit) / TimeResolution;
-    cost_stimulation = abs(nextNode.egoFrenetState(3) - expectAcc);
+% similarity
+lon_similarity_cost = calculate_longitudinal_similarity(node, nextNode);
+% lateral_similarity = calculate_lateral_similarity(planning_result, last_planning_result, index_traj);
 
-else
-    cost_stimulation = 0.0;
+% safety
+safety_cost = calculateSafetyCost_(nextNode, predictedActPositions, egoVehicle, profiles, scenario);
+
+% w_smoothness = 50.0;
+w_efficiency = 115.0;
+w_reasonable = 70.0;
+w_similarity = 50;
+w_safety = 100.0;
+w_lane_change = 136.0;
+final_efficiency_cost = w_efficiency * (travel_efficiency_cost + speed_efficiency_cost);
+final_reasonable_cost = w_reasonable * (deviation_cost + lane_cost);
+final_similarity_cost = w_similarity * (lon_similarity_cost);
+% final_lon_smoothness_cost = w_smoothness * jerk_smoothness_cost;
+% final_lat_smoothness_cost = w_smoothness * (theta_smoothness_cost + kappa_smoothness_cost);
+finial_lane_change_cost = w_lane_change * lane_change_cost;
+if node.state(1, end - 1) <= 3
+    % when the penalty is > 2000, the egoVehicle would try to change lane
+    % or it would just stop
+    final_efficiency_cost = final_efficiency_cost + 2000;
+end
+final_safety_cost = w_safety * safety_cost; 
+cost = [-(final_efficiency_cost + final_reasonable_cost + final_similarity_cost + finial_lane_change_cost + final_safety_cost), -final_efficiency_cost, -final_reasonable_cost, -final_similarity_cost, -finial_lane_change_cost, -final_safety_cost];
 end
 
-% calculate cost
+function jerk_smoothness_cost = calculate_lon_jerk_smoothness(node, nextNode, TimeResolution)
+    jerk_smoothness = (nextNode.egoFrenetState(1, 3) - node.egoFrenetState(1,3)) / TimeResolution;
+    k_jerk_smoothness = 0.01;
+    jerk_smoothness_deviation = 450.0;
+    jerk_smoothness_cost = 1.0 / (1.0 + k_jerk_smoothness * exp(jerk_smoothness_deviation - jerk_smoothness));
+end
 
-cost = [-(cost_comfort + cost_safety + cost_pass + cost_stimulation + cost_lane_changing + cost_is_break_to_stop), -cost_comfort, -cost_safety, -cost_pass, -cost_stimulation, - cost_lane_changing, - cost_is_break_to_stop];
+function theta_smoothness_cost = calculate_lat_theta_smoothness(node, nextNode, TimeResolution)
+    theta_smoothness = (nextNode.state(1, 3) - node.state(1,3)) / TimeResolution;
+    k_theta_smoothness = 0.01;
+    theta_smoothness_deviation = 450.0;
+    theta_smoothness_cost = 1.0 / (1.0 + k_theta_smoothness * exp(theta_smoothness_deviation - theta_smoothness));
+end
+
+function kappa_smoothness_cost = calculate_lat_kappa_smoothness(node, nextNode, TimeResolution)
+    kappa_smoothness = (nextNode.state(1, 3) - node.state(1,3)) / TimeResolution;
+    k_kappa_smoothness = 0.01;
+    kappa_smoothness_deviation = 450.0;
+    kappa_smoothness_cost = 1.0 / (1.0 + k_kappa_smoothness * exp(kappa_smoothness_deviation - kappa_smoothness));
+end
+
+function speed_efficiency_cost = calculate_speed_efficiency(node, nextNode, speedlimit)
+% k_speed = 2.0;
+distance_s = nextNode.egoFrenetState(1) - node.egoFrenetState(1);
+total_time = nextNode.time - node.time;
+average_speed = distance_s / total_time;
+speed_target = speedlimit;
+% other way for calculation
+% speed_efficiency_cost = 1.0 / (1.0 + exp(k_speed * (average_speed - speed_target)));
+k_quad = 1 / speedlimit;
+speed_efficiency_cost = k_quad * abs(-(average_speed - speed_target));
+end
+
+function travel_efficiency_cost = calculate_travel_efficiency(node, nextNode, checkPoint)
+% k_distance = 0.15;
+distance_s = nextNode.egoFrenetState(1) - node.egoFrenetState(1);
+target_distance = checkPoint - node.egoFrenetState(1);
+% other way for calculation
+% travel_efficiency_cost = 1.0 / (1.0 + exp(k_distance * (distance_s - target_distance)));
+k_quad = 1 / target_distance;
+travel_efficiency_cost = max(k_quad * -(distance_s - target_distance), 0);
 
 end
 
-
-function cost_comfort = calculateComfortCost(jerk, comfort, node)
-
-cost_comfort_jerk = 2 / (1 + exp(-jerk));
-cost_comfort_acc = 0;
-cost_comfort_alter = 0;
-acc = node.egoFrenetState(3);
-
-if comfort < -2
-    cost_comfort_acc = - 20 * comfort;
+function deviation_cost = calculate_deviation_cost
+deviation_cost = 0;
 end
 
-if acc * node.parentaCC < 0
-    cost_comfort_alter = 25.0;
-end
-
-cost_comfort = cost_comfort_acc + cost_comfort_jerk + cost_comfort_alter;
-
-% The comfort reward function is a sigmoid-like function.
-
-
-end
-
-
-function cost_pass = calculatePassibilityCost(node, checkPoint, MaxTimeHorizon)
-
-% The reward should be higher if the vehicle is able to pass the DestinationS more smoothly
-% For those node's time < MaxTimeHorizon, just let the reward be 0.
-if node.time >= MaxTimeHorizon
-
-    if node.egoFrenetState(1) > checkPoint
-        cost_pass = 0.0;
-    else
-        cost_pass = 2.0 + abs(node.egoFrenetState(1) - checkPoint);
-    end
-else
-    cost_pass = 0.0;
+function lane_cost = calculate_lane_cost(node, nextNode, is_lane_change)
+% epsilon = 0.01;
+% max_deviation = 0.0;
+lane_cost = 0.0;
+if is_lane_change
+    lane_cost = 1.0;
+    return
 end
 end
 
+function lon_similarity_cost = calculate_longitudinal_similarity(node, nextNode)
+lon_similarity_diff = 0.0;
+w_v = 2.0;
+w_a = 5.0;
+v_diff = max(node.parentV - node.state(1, end - 1), 0);
+a_diff = max(node.parentaCC - node.state(1, end), 0);
+lon_similarity_diff = lon_similarity_diff + w_v * abs(v_diff) + w_a * abs(a_diff);
 
-function cost_safety = calculateSafetyCost(nextNode, predictedActPositions, egoVehicle, profiles, scenario)
+k_lon_similarity = 0.01;
+lon_similarity_deviation = 400;
+lon_similarity_cost = 1.0 / (1.0 + exp(k_lon_similarity * (lon_similarity_deviation - lon_similarity_diff)));
 
-SAFE_DISTANCE = 5;
-Emergency_Distance = 1;
-cost_safety = 0;
-speed = nextNode.egoFrenetState(2);
-acc = nextNode.egoFrenetState(3);
+end
+
+function safety_cost = calculateSafetyCost_(nextNode, predictedActPositions, egoVehicle, profiles, scenario)
+% min_safety_dist = 100.0;
+% current_dist = 100.0;
 currTime = scenario.SimulationTime + nextNode.time;
 index = int32(currTime / 0.2) + 1;
-
-% Design a Piecewise function so that it returns a logorithmn decrease
-% when the distance is smaller than SAFE_DISTANCE
+k_safety = 1.0;
+safety_deviation = 1.5;
+safety_cost = 0.0;
 
 for i = 1:numel(predictedActPositions)
 
-    if index <= numel(predictedActPositions{i}(1, :))
+    if index <= numel(predictedActPositions{i}(:, 1))
         predicted = predictedActPositions{i}(index, :);
     else
         predicted = predictedActPositions{i}(end, :);
@@ -729,47 +826,14 @@ for i = 1:numel(predictedActPositions)
     ydistance = abs(nextNode.state(2) - predicted(2)) - 0.5 * (abs(objCarDim(2) * cosd(predicted(3))) + abs(objCarDim(1) * sind(predicted(3)))) - 0.5 * (abs(egoCarDim(2) * sind(nextNode.state(3))) + abs(egoCarDim(1) * sin(nextNode.state(3))));
 
     if ydistance <= 0
-
-        if xdistance <= Emergency_Distance && xdistance >= 0
-            % The growth of the cost function on this situation follows a linear trends
-            % with a slope of -10.
-            cost_safety_temp = -10 * (xdistance - Emergency_Distance) + 3.0 + 20 * speed ^2 + 10 * acc^3;
-
-        elseif xdistance > Emergency_Distance && xdistance <= SAFE_DISTANCE
-
-            cost_safety_temp = 1.0 * (xdistance - SAFE_DISTANCE) / (Emergency_Distance - SAFE_DISTANCE)  + 2.0 + 3 * speed ^2 + acc^3;
-
-
-        else
-            % Normally give a no more than 2.0 reward for the action that
-            % keeps distance.
-            cost_safety_temp = max(-1/100 * (xdistance - SAFE_DISTANCE) + 2.0, 0.0);
-        end
-    else
-        cost_safety_temp = 0;
+        current_dist = xdistance;
+        safety_cost = safety_cost + 1.0 / (1.0 + exp(k_safety * (current_dist - safety_deviation)));
+        % if current_dist < min_safety_dist
+        %     min_safety_dist = current_dist;
+        % end
+        
     end
+end
+% safety_cost =1.0 / (1.0 + exp(k_safety * (min_safety_dist - safety_deviation)));
 
-    cost_safety = cost_safety + cost_safety_temp;
-end
-
-end
-
-function cost_laneChanging = calculateLaneChangingCost(node)
-% This function calculate the cost of the egoVehicle's action of chaning
-% lanes
-if abs(node.egoFrenetState(4)) >= 0.5
-    cost_laneChanging = 150.0;
-else
-    cost_laneChanging = 0.0;
-end
-end
-
-function cost_is_break_to_stop = calculateBreakToStop(node, MaxTimeHorizon)
-% This function gives a panalty cost if the egoVehicle's speed is not
-% moving
-if node.time >= MaxTimeHorizon && node.state(5) < 2
-    cost_is_break_to_stop = 200.0;
-else
-    cost_is_break_to_stop = 0.0;
-end
 end
