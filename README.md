@@ -16,6 +16,30 @@ We present a comprehensive framework based on Monte Carlo Tree Search for decisi
 
 We examine representative urban environments, such as crossing intersections, handling cut-ins, and exiting highways. The MCTS framework provides human-like, efficient decision-making across these scenarios. 
 
+<!--
+## Road in Shanghai
+<table>
+  <tr>
+    <td><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/83dd9359-907e-4bb6-aa78-44418a43dc49" alt="ShanghaiCenturalAvenue" width="100%"/></td>
+    <td><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/ce8fe49c-74ca-403a-9819-9605335e1412" alt="ShanghaiIntersection" width="100%"/></td>
+    <td><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/4b419c0f-5f5b-4bbd-83de-c18befa8b5d1" alt="ShanghaiLujiazuiTunnel" width="100%"/></td>
+    <td><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/4b71eab5-08ce-4cfa-9587-a5bca752ba23" alt="ShanghaiLujiazuiTunnel" width="100%"/></td>
+</table>
+-->
+
+<!--!![ShanghaiCenturalAvenue](https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/83dd9359-907e-4bb6-aa78-44418a43dc49)-->
+<!--![ShanghaiIntersection](https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/ce8fe49c-74ca-403a-9819-9605335e1412)-->
+<!--![ShanghaiLujiazuiTunnel](https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/4b419c0f-5f5b-4bbd-83de-c18befa8b5d1)-->
+<!--![ShanghaiRoundAbout-ChasePlot](https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/4b71eab5-08ce-4cfa-9587-a5bca752ba23)-->
+
+<!--
+<img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/a7841a81-12d8-469b-b5a1-52c089a50d64" width="300" alt="Description of GIF">
+_Figure 1: Shanghai Century Avenue._
+-->
+
+<!--![ShanghaiCenturalAvenueGoStraight-BirdEye](https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/e8ac453f-2995-4149-b5e7-26a657f290ee)-->
+<!--![ShanghaiCenturalAvenueGoStraight-ChasePlot](https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/a7841a81-12d8-469b-b5a1-52c089a50d64)-->
+
 
 ##  Typical Highway Scenarios
  
