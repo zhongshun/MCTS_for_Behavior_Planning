@@ -1,4 +1,4 @@
-![ShanghaiRoundAbout-ChasePlot2](https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/db44812d-e7db-4f30-af2f-a09a660e778c)# Decision-making in Autonomous Driving using Monte Carlo Tree Search (MCTS)
+# Decision-making in Autonomous Driving using Monte Carlo Tree Search (MCTS)
 
 This repository contains the code, datasets, and supplementary materials related to our research paper on leveraging MCTS for decision-making in autonomous vehicles. 
 
