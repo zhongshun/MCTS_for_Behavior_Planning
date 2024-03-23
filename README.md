@@ -14,13 +14,9 @@ We present a comprehensive framework based on Monte Carlo Tree Search for decisi
 
 ## Qualitative Results
 
+## Real-world Road Scenarios
 
-##  Shanghai Real Road Scenarios
-We examine representative urban environments, such as crossing intersections, handling cut-ins, and exiting highways. The MCTS framework provides human-like, efficient decision-making across these scenarios. 
-
-
-## Road in Shanghai
-## Road in Shanghai
+we demonstrate the effectiveness of our autonomous driving algorithm in navigating through typical real-world environments, from left to right: Navigation through an Intersection, Managing Merging and Diverging, Unprotected Left Turn at Intersection, and Navigation through a Roundabout.
 
 <table>
   <tr>
@@ -30,6 +26,7 @@ We examine representative urban environments, such as crossing intersections, ha
     <td><p align="center"><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/fe49adf7-2321-4a05-84d2-365673c63e91" alt="ShanghaiRoundAbout" width="60%" height="60%"/></p></td>
   </tr>
 </table>
+_Figure 1: Real traffic Roads in Shanghai, China._
 
 
 <table>
@@ -40,6 +37,8 @@ We examine representative urban environments, such as crossing intersections, ha
     <td><p align="center"><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/b9c8fb1c-fa36-406a-800e-9e421691273e" alt="ShanghaiRoundAbout" width="70%" height="70%"/></p></td>
   </tr>
 </table>
+_Figure 1: Birds Eye View._
+
 
 <table>
   <tr>
@@ -49,6 +48,8 @@ We examine representative urban environments, such as crossing intersections, ha
     <td><p align="center"><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/a409bf8f-17e2-40ca-87ec-2b6e8c8b0f8a" alt="ShanghaiRoundAbout" width="80%"/></p></td>
   </tr>
 </table>
+_Figure 1: Typical Results._
+
 
 
 
