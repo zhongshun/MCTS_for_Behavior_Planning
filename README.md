@@ -1,4 +1,4 @@
-![ShanghaiCenturalAvenueRightTurn-ChasePlot](https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/f065cddf-2a65-4574-99b6-46569a9942b5)# Decision-making in Autonomous Driving using Monte Carlo Tree Search (MCTS)
+![ShanghaiRoundAbout-ChasePlot2](https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/db44812d-e7db-4f30-af2f-a09a660e778c)# Decision-making in Autonomous Driving using Monte Carlo Tree Search (MCTS)
 
 This repository contains the code, datasets, and supplementary materials related to our research paper on leveraging MCTS for decision-making in autonomous vehicles. 
 
@@ -22,39 +22,29 @@ We examine representative urban environments, such as crossing intersections, ha
 ## Road in Shanghai
 <table>
   <tr>
-    <td><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/83dd9359-907e-4bb6-aa78-44418a43dc49" alt="ShanghaiCenturalAvenue" width="100%"/></td>
-    <td><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/ce8fe49c-74ca-403a-9819-9605335e1412" alt="ShanghaiIntersection" width="100%"/></td>
-    <td><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/4b419c0f-5f5b-4bbd-83de-c18befa8b5d1" alt="ShanghaiLujiazuiTunnel" width="100%"/></td>
-    <td><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/4b71eab5-08ce-4cfa-9587-a5bca752ba23" alt="ShanghaiLujiazuiTunnel" width="100%"/></td>
+    <td><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/83dd9359-907e-4bb6-aa78-44418a43dc49" alt="ShanghaiCenturalAvenue" width="60%" height="60%"/></td>
+   <td><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/ce8fe49c-74ca-403a-9819-9605335e1412" alt="ShanghaiIntersection" width="60%" height="60%"/></td>  
+    <td><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/4b419c0f-5f5b-4bbd-83de-c18befa8b5d1" alt="ShanghaiLujiazuiTunnel" width="60%" height="60%"/></td>
+    <td><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/4b71eab5-08ce-4cfa-9587-a5bca752ba23" alt="ShanghaiRoundAbout" width="60%" height="60%"/></td>
 </table>
 
 
-<!--
-<img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/a7841a81-12d8-469b-b5a1-52c089a50d64" width="300" alt="Description of GIF">
-_Figure 1: Shanghai Century Avenue._
--->
-
-<!--![ShanghaiCenturalAvenueGoStraight-BirdEye](https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/e8ac453f-2995-4149-b5e7-26a657f290ee)-->
-<!--![ShanghaiCenturalAvenueGoStraight-ChasePlot](https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/a7841a81-12d8-469b-b5a1-52c089a50d64)-->
-
-### Shanghai Results 1
 <table>
   <tr>
-    <td><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/f39fd4e6-8a88-42dc-a896-6dad7084765c" alt="ShanghaiCenturalAvenue" width="100%"/></td>
-    <td><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/05b413b6-b42b-4686-9ebc-001ba0a88ad9" alt="ShanghaiIntersection" width="100%"/></td>
+    <td><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/f8db1436-c636-4cb4-bea6-644598532c51" alt="ShanghaiCenturalAvenue"  width="50%" height="50%"/></td>
+    <td><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/0a05ae5d-89cf-4229-a139-37e5ed4f3e4e" alt="ShanghaiLujiazuiTunnel"  width="50%" height="50%"/></td>
+    <td><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/d26e3e95-eae2-49cb-8cfb-931f554dfd2e" alt="ShanghaiLujiazuiTunnel"  width="50%" height="50%"/></td>
+    <td><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/b9c8fb1c-fa36-406a-800e-9e421691273e" alt="ShanghaiRoundAbout"  width="50%" height="50%"/></td>
 </table>
 
 
-### Shanghai Results 2
-![ShanghaiCenturalAvenueRightTurn-BirdEye](https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/8524e6b3-dd5b-430e-94a0-4d13e3839cea)
-![ShanghaiCenturalAvenueRightTurn-ChasePlot](https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/4fcd2284-5c00-403a-b3ec-b0dd48a87711)
-
-### Shanghai Results 3
-![ShanghaiLujiazuiTunnel-BirdEye](https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/71c72961-972f-42e4-ad4a-779e679ae5a6)
-
-
-### Shanghai Results 4
-![ShanghaiRoundAbout-BirdEye](https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/581688f7-3c00-4485-86b7-b4c877c57e54)
+<table>
+  <tr>
+    <td><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/226da03d-0813-4fd8-8183-2fed35b58bc8" alt="ShanghaiCenturalAvenue" width="80%"/></td>
+    <td><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/577aab35-06c5-45c6-89ea-d8f2db4d6dca" alt="ShanghaiLujiazuiTunnel" width="100%"/></td>
+    <td><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/5f16817a-3696-49a7-8176-8b04063c007f" alt="ShanghaiLujiazuiTunnel" width="100%"/></td>
+    <td><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/a409bf8f-17e2-40ca-87ec-2b6e8c8b0f8a" alt="ShanghaiRoundAbout" width="80%"/></td>
+</table>
 
 
 
