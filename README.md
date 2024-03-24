@@ -16,9 +16,9 @@ We present a comprehensive framework based on Monte Carlo Tree Search for decisi
 
 ## Real-world Road Scenarios
 
-We demonstrate the effectiveness of our autonomous driving algorithm in navigating through typical real-world environments, from left to right: Navigation through an Intersection, Managing Merging and Diverging, Unprotected Left Turn at Intersection, and Navigation through a Roundabout.
+We demonstrate the effectiveness of our autonomous driving algorithm in navigating through typical real-world environments, from left to right: Navigation through an Intersection, Unprotected Left Turn at Intersection, Managing Merging and Diverging, and Navigation through a Roundabout.
 
-### Real traffic Roads in Shanghai, China.
+### Roads in Shanghai, China.
 <table>
   <tr>
     <td><p align="center"><img src="https://github.com/zhongshun/MCTS_for_Behavior_Planning/assets/14044932/83dd9359-907e-4bb6-aa78-44418a43dc49" alt="ShanghaiCenturalAvenue" width="60%" height="60%"/></p></td>
