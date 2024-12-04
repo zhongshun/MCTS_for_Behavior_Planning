@@ -2,6 +2,20 @@
 
 This repository contains the code, datasets, and supplementary materials related to our research paper on leveraging MCTS for decision-making in autonomous vehicles. 
 
+This research was presented at the 2024 IEEE International Symposium on Safety Security Rescue Robotics (SSRR), held in New York. 
+[View the paper here](https://ieeexplore.ieee.org/document/10770028).
+
+If you find the approaches and data provided in this repository helpful for your research, please consider citing our paper:
+```bibtex
+@inproceedings{wen2024monte,
+  title={Monte Carlo Tree Search for Behavior Planning in Autonomous Driving},
+  author={Wen, Qianfeng and Gong, Zhongyi and Zhou, Lifeng and Zhang, Zhongshun},
+  booktitle={2024 IEEE International Symposium on Safety Security Rescue Robotics (SSRR)},
+  year={2024},
+  publisher={IEEE}
+}
+```
+
 ## Abstract
 
 We present a comprehensive framework based on Monte Carlo Tree Search for decision-making in autonomous driving scenarios. Through extensive simulations in MATLAB's autonomous driving toolbox 2023a (Note that some functions may not supported for lower version.). We showcase the framework's efficacy across various driving conditions, from intricate urban intersections to highway exits. While our simulations demonstrate promising results, we highlight areas for potential improvement and suggest future research directions.
